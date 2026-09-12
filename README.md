@@ -2,26 +2,25 @@
 
 
 
-# [Project Name] 🎯
+#  🎯
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: [Saltymeter]
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: [Jils Shaiju] - [NSS College Of Engineering]
+- Member 2: [Neha Ann Philip] - [NSS College Of Engineering]
 
 ### Project Description
-[2-3 lines about what your project does]
+We wanted to build something that would be useless to us, something able to make he drama as us. And tada, we are building Tabot, who is a dramatic table robot who loves to push things off the table. And if he can't seem to push it off - he screams in rick roll.
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+We are solving the problem of the non - existent drama in our lives. 
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+We create more drama!!!!
 
 ## Technical Details
 ### Technologies/Components Used
@@ -32,7 +31,7 @@ For Software:
 - [Tools used]
 
 For Hardware:
-- [List main components]
+- Components used: ESP32, Motors, Motor drivers etc.
 - [List specifications]
 - [List tools required]
 
@@ -45,22 +44,6 @@ For Software:
 [commands]
 
 ### Project Documentation
-For Software:
-
-# Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
-
-# Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
-
 For Hardware:
 
 # Schematic & Circuit
