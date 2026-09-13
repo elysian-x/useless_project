@@ -6,15 +6,15 @@
 
 
 ## Basic Details
-### Team Name: [Saltymeter]
+### Team Name: Saltymeter
 
 
 ### Team Members
-- Team Lead: [Jils Shaiju] - [NSS College Of Engineering]
-- Member 2: [Neha Ann Philip] - [NSS College Of Engineering]
+- Team Lead: Jils Shaiju - NSS College Of Engineering
+- Member 2:  Neha Ann Philip - NSS College Of Engineering
 
 ### Project Description
-We wanted to build something that would be useless to us, something able to make he drama as us. And tada, we are building Tabot, who is a dramatic table robot who loves to push things off the table. And if he can't seem to push it off - he screams in rick roll.
+We wanted to build something that would be useless to us, what's more useless than a "thanthoni" robot.
 
 ### The Problem (that doesn't exist)
 We are solving the problem of the non - existent drama in our lives. 
@@ -24,24 +24,17 @@ We create more drama!!!!
 
 ## Technical Details
 ### Technologies/Components Used
-For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
-
 For Hardware:
-- Components used: ESP32, Motors, Motor drivers etc.
-- [List specifications]
-- [List tools required]
-
-### Implementation
-For Software:
-# Installation
-[commands]
-
-# Run
-[commands]
+- Components used: Arduino Uno, Motors, Motor drivers, IR Sensors, Ultrasonic sensors, OLED, Buzzer, Castor wheel, Wheel, Battery, Jumper wire, Chassis, Ultrasonic sensor, Switch.
+- Specifications:
+  Has eyes that move according to movement of bot
+  Has a voice that screams if we block him or pick him off the ground
+  
+- List tools required:
+  Screwdriver
+  Soldering iron/Desoldering pump
+  Double sided tape
+  Foam board
 
 ### Project Documentation
 For Hardware:
