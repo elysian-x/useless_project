@@ -1,0 +1,602 @@
+#include <Arduino.h>
+#include <U8g2lib.h>
+
+// =====================================================
+// OLED
+// =====================================================
+
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(
+  U8G2_R0,
+  U8X8_PIN_NONE
+);
+
+
+// =====================================================
+// IR SENSORS
+// =====================================================
+
+#define FRONT_LEFT   2
+#define FRONT_RIGHT  3
+#define REAR_LEFT    4
+#define REAR_RIGHT   11
+
+
+// =====================================================
+// L298N MOTOR DRIVER
+// =====================================================
+
+#define ENA 5
+#define IN1 7
+#define IN2 8
+
+#define IN3 9
+#define IN4 10
+#define ENB 6
+
+
+// =====================================================
+// ULTRASONIC
+// =====================================================
+
+#define TRIG_PIN 12
+#define ECHO_PIN 13
+
+
+// =====================================================
+// MOTOR SPEED
+// =====================================================
+
+int motorSpeed = 170;
+
+
+// =====================================================
+// OBSTACLE SETTINGS
+// =====================================================
+
+const int SAFE_DISTANCE = 25;
+
+int failedAttempts = 0;
+
+
+// =====================================================
+// NORMAL EYES
+// =====================================================
+
+void normal() {
+
+  u8g2.clearBuffer();
+
+  u8g2.drawRBox(8, 12, 50, 35, 9);
+  u8g2.drawRBox(70, 12, 50, 35, 9);
+
+  u8g2.sendBuffer();
+}
+
+
+// =====================================================
+// CLOSED EYES
+// =====================================================
+
+void closeEyes() {
+
+  u8g2.clearBuffer();
+
+  u8g2.drawRBox(5, 19, 55, 18, 6);
+  u8g2.drawRBox(67, 19, 55, 18, 6);
+
+  u8g2.setDrawColor(0);
+
+  u8g2.drawBox(5, 1, 55, 18);
+  u8g2.drawBox(67, 1, 55, 18);
+
+  u8g2.setDrawColor(1);
+
+  u8g2.sendBuffer();
+}
+
+
+// =====================================================
+// HAPPY
+// =====================================================
+
+void happy() {
+
+  for (int i = 62; i > 58; i -= 3) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 12, 50, 35, 11);
+    u8g2.drawRBox(70, 12, 50, 35, 11);
+
+    u8g2.setDrawColor(0);
+
+    u8g2.drawDisc(33, i, 38, U8G2_DRAW_ALL);
+    u8g2.drawDisc(95, i, 38, U8G2_DRAW_ALL);
+
+    u8g2.setDrawColor(1);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// CUTE
+// =====================================================
+
+void cute() {
+
+  for (int i = 0; i <= 2; i += 2) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 12, 50, 35, 12);
+    u8g2.drawRBox(70, 12, 50, 35, 12);
+
+    u8g2.setDrawColor(0);
+
+    u8g2.drawDisc(30, 66 - i, 40, U8G2_DRAW_ALL);
+    u8g2.drawDisc(98, 66 - i, 40, U8G2_DRAW_ALL);
+
+    u8g2.setDrawColor(1);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// SAD
+// =====================================================
+
+void sad() {
+
+  for (int i = 0; i <= 15; i += 3) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 18, 50, 29, 9);
+    u8g2.drawRBox(70, 18, 50, 29, 9);
+
+    u8g2.setDrawColor(0);
+
+    u8g2.drawTriangle(
+      3, 14,
+      64, 14,
+      3, 21 + i
+    );
+
+    u8g2.drawTriangle(
+      68, 14,
+      124, 21 + i,
+      124, 14
+    );
+
+    u8g2.setDrawColor(1);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// ANGRY
+// =====================================================
+
+void angry() {
+
+  for (int i = 0; i <= 15; i += 3) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 18, 50, 29, 9);
+    u8g2.drawRBox(70, 18, 50, 29, 9);
+
+    u8g2.setDrawColor(0);
+
+    u8g2.drawTriangle(
+      3, 14,
+      64, 18 + i,
+      124, 14
+    );
+
+    u8g2.setDrawColor(1);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// LOOK DOWN
+// =====================================================
+
+void downEye() {
+
+  closeEyes();
+
+  delay(120);
+
+  for (int i = 0; i <= 12; i += 4) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 22 + i, 50, 21, 9);
+    u8g2.drawRBox(70, 34, 50, 21, 9);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// LOOK RIGHT
+// =====================================================
+
+void rightEye() {
+
+  closeEyes();
+
+  delay(120);
+
+  for (int i = 0; i <= 8; i += 4) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8 - i, 17, 50, 27, 9);
+    u8g2.drawRBox(70 - i, 17, 50, 27, 9);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// LOOK LEFT
+// =====================================================
+
+void leftEye() {
+
+  closeEyes();
+
+  delay(120);
+
+  for (int i = 0; i <= 8; i += 4) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8 + i, 17, 50, 27, 9);
+    u8g2.drawRBox(70 + i, 17, 50, 27, 9);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// LOOK UP
+// =====================================================
+
+void upEye() {
+
+  closeEyes();
+
+  delay(120);
+
+  for (int i = 0; i <= 12; i += 4) {
+
+    u8g2.clearBuffer();
+
+    u8g2.drawRBox(8, 12 - i, 50, 25, 9);
+    u8g2.drawRBox(70, 0, 50, 25, 9);
+
+    u8g2.sendBuffer();
+  }
+}
+
+
+// =====================================================
+// MOTOR FUNCTIONS
+// =====================================================
+
+void moveForward() {
+
+  analogWrite(ENA, motorSpeed);
+  analogWrite(ENB, motorSpeed);
+
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+
+void moveBackward() {
+
+  analogWrite(ENA, motorSpeed);
+  analogWrite(ENB, motorSpeed);
+
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+
+void stopRobot() {
+
+  analogWrite(ENA, 0);
+  analogWrite(ENB, 0);
+
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+
+void turnLeft() {
+
+  analogWrite(ENA, motorSpeed);
+  analogWrite(ENB, motorSpeed);
+
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+
+void turnRight() {
+
+  analogWrite(ENA, motorSpeed);
+  analogWrite(ENB, motorSpeed);
+
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+
+// =====================================================
+// ULTRASONIC DISTANCE
+// =====================================================
+
+long getDistance() {
+
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH, 25000);
+
+  if (duration == 0) {
+    return 400;
+  }
+
+  long distance = duration * 0.034 / 2;
+
+  return distance;
+}
+
+
+// =====================================================
+// CRY / DISTRESS ANIMATION (buzzer removed)
+// =====================================================
+
+void cryMelody() {
+
+  stopRobot();
+
+  // Sad face
+  sad();
+
+  delay(500);
+
+  normal();
+}
+
+
+// =====================================================
+// RANDOM TURN
+// =====================================================
+
+void randomTurn() {
+
+  int direction = random(0, 2);
+
+  if (direction == 0) {
+
+    Serial.println("Random LEFT turn");
+
+    leftEye();
+
+    turnLeft();
+
+    delay(random(400, 800));
+  }
+
+  else {
+
+    Serial.println("Random RIGHT turn");
+
+    rightEye();
+
+    turnRight();
+
+    delay(random(400, 800));
+  }
+
+  stopRobot();
+
+  delay(150);
+}
+
+
+// =====================================================
+// AVOID OBSTACLE
+// =====================================================
+
+void avoidObstacle() {
+
+  Serial.println("OBSTACLE DETECTED!");
+
+  stopRobot();
+
+  delay(200);
+
+  // First move backward
+  downEye();
+
+  moveBackward();
+
+  delay(500);
+
+  stopRobot();
+
+  delay(150);
+
+  // Randomly turn
+  randomTurn();
+
+  // Check again
+  long distance = getDistance();
+
+  Serial.print("New distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  if (distance > SAFE_DISTANCE) {
+
+    // Successfully escaped
+    failedAttempts = 0;
+
+    happy();
+    delay(100);
+
+  }
+
+  else {
+
+    // Still blocked
+    failedAttempts++;
+
+    Serial.print("Failed attempts = ");
+    Serial.println(failedAttempts);
+  }
+}
+
+
+// =====================================================
+// SETUP
+// =====================================================
+
+void setup() {
+
+  Serial.begin(9600);
+
+  // OLED
+  u8g2.begin();
+
+  // IR sensors
+  pinMode(FRONT_LEFT, INPUT);
+  pinMode(FRONT_RIGHT, INPUT);
+  pinMode(REAR_LEFT, INPUT);
+  pinMode(REAR_RIGHT, INPUT);
+
+  // Motors
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+
+  pinMode(ENB, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  // Ultrasonic
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
+  stopRobot();
+
+  randomSeed(analogRead(A1));
+
+  normal();
+
+  delay(1000);
+}
+
+
+// =====================================================
+// MAIN LOOP
+// =====================================================
+
+void loop() {
+
+  long distance = getDistance();
+
+  Serial.print("Distance = ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+
+  // =================================================
+  // OBSTACLE
+  // =================================================
+
+  if (distance <= SAFE_DISTANCE) {
+
+    avoidObstacle();
+
+    // If robot has repeatedly failed
+    if (failedAttempts >= 3) {
+
+      Serial.println("NO WAY OUT!");
+
+      cryMelody();
+
+      failedAttempts = 0;
+
+      // Make a longer random escape
+      moveBackward();
+      delay(700);
+
+      randomTurn();
+
+      return;
+    }
+
+    return;
+  }
+
+
+  // =================================================
+  // CLEAR PATH
+  // =================================================
+
+  moveForward();
+
+  // Occasionally change direction randomly
+  // to make movement less predictable
+
+  if (random(0, 100) < 3) {
+
+    stopRobot();
+
+    delay(100);
+
+    randomTurn();
+  }
+
+  delay(50);
+}
