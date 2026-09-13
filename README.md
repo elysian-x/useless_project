@@ -38,23 +38,38 @@ For Hardware:
 
 ### Project Documentation
 For Hardware:
-
 # Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
+Circuit(circuit.jpg)
+## Connection summary
 
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
+**Power**
+- Arduino 5V → +5V rail → OLED, HC-SR04, and all 4 IR sensors' VCC pins
+- Arduino GND → GND rail → shared by every component, including the L298N and battery negative (critical: logic and motor grounds must be common)
+- 6–12V battery pack → L298N 12V input (separate high-current supply for the motors, isolated from the Arduino's own 5V regulator)
+
+**OLED display (I2C)**
+- SCL → A5, SDA → A4 — the only two data lines needed since I2C is a shared bus protocol
+
+**HC-SR04 ultrasonic**
+- TRIG → D12 (Arduino sends the trigger pulse out)
+- ECHO → D13 (Arduino reads the return pulse to time it)
+
+**IR sensors (4x)**
+- Each has a single digital OUT line → D2 (front-left), D3 (front-right), D4 (rear-left), D11 (rear-right)
+
+**Buzzer**
+- SIG → A0 (driven directly by `tone()`, no VCC pin needed for a passive piezo)
+- GND → rail
+
+**L298N motor driver**
+- ENA/ENB (D5/D6) → PWM speed control for motor A and B
+- IN1–IN4 (D7–D10) → direction control (two pins per motor set the H-bridge polarity)
+- OUT1/OUT2 → left motor, OUT3/OUT4 → right motor
+
+The overall logic: the Arduino reads the ultrasonic + IR sensors to sense its surroundings, drives the L298N to move the motors, and updates the OLED "face" and buzzer to reflect its current behavior — all sharing one common ground so the signal and motor power domains stay electrically referenced to each other.
 
 # Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
 
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
 
 ### Project Demo
 # Video
