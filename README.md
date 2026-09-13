@@ -73,8 +73,7 @@ The overall logic: the Arduino reads the ultrasonic + IR sensors to sense its su
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+https://drive.google.com/file/d/1V81yFddnMm4QLCRS0BBo7YzeTtytqExa/view?usp=drive_link
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
